@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { urlConfig } from "../../config";
+import { useAppContext } from "../../context/AuthContext";
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import './RegisterPage.css';
 
@@ -8,8 +11,39 @@ function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [showerr, setShowerr] = useState('');
+
+    const nav = useNavigate();
+    const { setIsLoggedIn } = useAppContext();
+
     const handleRegister = async () => {
-        console.log("Register invoked")
+        const res = await fetch(`${urlConfig.backendUrl}/api/auth/register`, {
+            method: 'POST',
+            headers: {
+                'content-type': "application/json"
+            },
+            body: JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            })
+        });
+
+        const json = await res.json();
+        console.log('json data: ', json);
+        console.log('err: ', json.error);
+
+        if (json.authtoken) {
+            sessionStorage.setItem('auth-token', json.authtoken);
+            sessionStorgage.setItem('name', firstName);
+            sessionStorage.setItem('email', json.email);
+            setIsLoggedIn(true);
+            nav('/app');
+        }
+        if (json.error) {
+            setShowerr(json.error);
+        }
     }
 
 return (
