@@ -36,7 +36,7 @@ function RegisterPage() {
 
         if (json.authtoken) {
             sessionStorage.setItem('auth-token', json.authtoken);
-            sessionStorgage.setItem('name', firstName);
+            sessionStorage.setItem('name', firstName);
             sessionStorage.setItem('email', json.email);
             setIsLoggedIn(true);
             nav('/app');
